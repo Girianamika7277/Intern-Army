@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: aquamarine;
+    }
+
+    #urlInput {
+      width: 300px;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    #shortenBtn {
+      padding: 8px 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #shortenedLinks {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <label for="urlInput">Enter URL:</label>
+    <input type="text" id="urlInput">
+    <button onclick="shortenUrl()" id="shortenBtn">Shorten</button>
+    <div id="shortenedLinks"></div>
+  </div>
+
+  <script>
+    // Function to make API request and handle response
+    async function shortenUrl() {
+      const urlInput = document.getElementById('urlInput');
+      const shortenedLinksContainer = document.getElementById('shortenedLinks');
+
+      try {
+        // Make API request to rel.ink
+        const response = await fetch('https://rel.ink/api/links/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            url: urlInput.value,
+          }),
+        });
+
+        const responseData = await response.json();
+
+        // Display the shortened URL
+        const shortenedUrl = responseData.short_url;
+        shortenedLinksContainer.innerHTML += `<p><a href="${shortenedUrl}" target="_blank">${shortenedUrl}</a></p>`;
+
+        // Save to local storage
+        saveToLocalStorage(shortenedUrl);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    // Function to save links to local storage
+    function saveToLocalStorage(link) {
+      const savedLinks = JSON.parse(localStorage.getItem('shortenedLinks')) || [];
+      savedLinks.push(link);
+      localStorage.setItem('shortenedLinks', JSON.stringify(savedLinks));
+    }
+
+    // Function to load links from local storage on page load
+    window.onload = function () {
+      const shortenedLinksContainer = document.getElementById('shortenedLinks');
+      const savedLinks = JSON.parse(localStorage.getItem('shortenedLinks')) || [];
+
+      savedLinks.forEach(link => {
+        shortenedLinksContainer.innerHTML += `<p><a href="${link}" target="_blank">${link}</a></p>`;
+      });
+    };
+  </script>
+</body>
+</html>

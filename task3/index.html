@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: aquamarine;
+        }
+
+        #taskList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .task {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        h1{
+            text-align: center;
+        }
+
+        #taskForm {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #categoryInput {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Task Tracker</h1>
+
+    <form id="taskForm">
+        <input type="text" id="taskInput" placeholder="Enter task title" required>
+        <input type="text" id="categoryInput" placeholder="Enter category">
+        <button type="button" onclick="addTask()">Add Task</button>
+    </form>
+
+    <ul id="taskList"></ul>
+
+    <script>
+        function addTask() {
+            const taskInput = document.getElementById("taskInput");
+            const categoryInput = document.getElementById("categoryInput");
+            
+            const taskTitle = taskInput.value.trim();
+            const category = categoryInput.value.trim();
+
+            if (taskTitle !== "") {
+                const taskList = document.getElementById("taskList");
+
+                const taskItem = document.createElement("li");
+                taskItem.className = "task";
+                
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                
+                const taskDetails = document.createElement("span");
+                taskDetails.textContent = `${taskTitle} - ${category}`;
+                
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.onclick = function() {
+                    taskList.removeChild(taskItem);
+                };
+
+                taskItem.appendChild(checkbox);
+                taskItem.appendChild(taskDetails);
+                taskItem.appendChild(deleteButton);
+
+                taskList.appendChild(taskItem);
+
+                // Clear input fields
+                taskInput.value = "";
+                categoryInput.value = "";
+            }
+        }
+    </script>
+
+</body>
+</html>
